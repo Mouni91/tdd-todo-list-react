@@ -1,97 +1,46 @@
-import React from "react";
-import "./App.css";
+import React, { Component } from 'react';
+import './App.css';
+import TodoInput from "./components/TodoInput"
+import TodosList from "./components/TodosList"
+//import uuid from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
-import { Button, Card, Form } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
+class App extends Component {
+  constructor() {
+    super();
+    this.state = { allTodos: [] }
+  }
 
-function Todo({ todo, index, markTodo, removeTodo }) {
-  return (
-    <div
-      className="todo"
-      
-    >
-      <span style={{ textDecoration: todo.isDone ? "line-through" : "" }}>{todo.text}</span>
-      <div>
-        <Button variant="outline-success" onClick={() => markTodo(index)}>✓</Button>{' '}
-        <Button variant="outline-danger" onClick={() => removeTodo(index)}>✕</Button>
+  createTodoObj = (inputVal) => {
+    this.StoreTodo({ id: uuidv4(), title: inputVal, done: false });
+  }
+
+  StoreTodo = (newTodo) => {
+    this.setState({ allTodos: [...this.state.allTodos, newTodo] })
+  }
+
+  handleCheckTodo = (checkVal, id) => {
+    let todos = this.state.allTodos.slice();
+    let index = todos.findIndex(x => x.id === id);
+    todos[index].done = checkVal;
+    this.setState({ allTodos: todos });
+  }
+
+  handleDeleteTodo = (id) => {
+    let todos = this.state.allTodos.slice();
+    let index = todos.findIndex(x => x.id === id);
+    this.setState({allTodos: todos.slice(0,index).concat(todos.slice(index+1))});
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <TodoInput todoInputValue={this.createTodoObj} />
+        <TodosList todoList={this.state.allTodos} onChecked={this.handleCheckTodo}
+          onDelete={this.handleDeleteTodo} />
       </div>
-    </div>
-  );
+    );
+  }
 }
-
-function FormTodo({ addTodo }) {
-  const [value, setValue] = React.useState("");
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    if (!value) return;
-    addTodo(value);
-    setValue("");
-  };
-
-  return (
-    <Form onSubmit={handleSubmit}> 
-    <Form.Group>
-      <Form.Label><b>Add Todo</b></Form.Label>
-      <Form.Control type="text" className="input" value={value} onChange={e => setValue(e.target.value)} placeholder="Add new todo" />
-    </Form.Group>
-    <br></br>
-    <Button variant="primary mb-3" type="submit">
-      Submit
-    </Button>
-  </Form>
-  );
-}
-
-function App() {
-  const [todos, setTodos] = React.useState([
-   /* {
-      text: "This is a sampe todo",
-      isDone: false
-    } */
-  ]);
-
-  const addTodo = text => {
-    const newTodos = [...todos, { text }];
-    setTodos(newTodos);
-  };
-
-  const markTodo = index => {
-    const newTodos = [...todos];
-    newTodos[index].isDone = true;
-    setTodos(newTodos);
-  };
-
-  const removeTodo = index => {
-    const newTodos = [...todos];
-    newTodos.splice(index, 1);
-    setTodos(newTodos);
-  };
-
-  return (
-    <div className="app">
-      <div className="container">
-        <h1 className="text-center mb-4">Todo List</h1>
-        <FormTodo addTodo={addTodo} />
-        <div>
-          {todos.map((todo, index) => (
-            <Card>
-              <Card.Body>
-                <Todo
-                key={index}
-                index={index}
-                todo={todo}
-                markTodo={markTodo}
-                removeTodo={removeTodo}
-                />
-              </Card.Body>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default App;

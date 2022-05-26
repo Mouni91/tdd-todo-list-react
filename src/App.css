@@ -1,15 +1,30 @@
-.app {
-    padding-top: 50px;
-    padding-right: 450px;
-    padding-bottom: 50px;
-    padding-left: 450px;
-    background-color: floralwhite;
-  }
-  
-  .todo {
-    align-items: center;
-    display: flex;
-    font-size: 18px;
+.App {
 
-    justify-content: space-between;
-  }
+  
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  
+  height: 150px;
+  padding: 20px;
+  
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
